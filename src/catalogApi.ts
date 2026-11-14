@@ -11,7 +11,7 @@ async function request(path:string,options:RequestInit={},authenticated=false){
  if(!url||!key)throw new Error('Configure as variáveis VITE_SUPABASE_URL e VITE_SUPABASE_ANON_KEY.');
  const headers:Record<string,string>={apikey:key,'Content-Type':'application/json',...(options.headers as Record<string,string>||{})};
  if(authenticated){const token=await accessToken();if(!token)throw new Error('Entre como administrador.');headers.Authorization='Bearer '+token}
- else headers.Authorization='Bearer '+key;
+ // Publishable keys belong in apikey, not in a Bearer authorization header.
  const res=await fetch(url+path,{...options,headers});
  if(!res.ok){const detail=await res.json().catch(()=>({}));throw new Error(detail.message||detail.msg||detail.error_description||'Falha na solicitação ('+res.status+').')}
  if(res.status===204)return null;
